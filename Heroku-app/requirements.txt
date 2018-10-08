@@ -1,0 +1,15 @@
+bottle==0.12.13
+certifi==2018.4.16
+chardet==3.0.4
+gunicorn==19.7.1
+idna==2.6
+numpy==1.14.2
+pandas==0.22.0
+psycopg2==2.7.4
+python-dateutil==2.7.2
+pytz==2018.4
+requests==2.18.4
+scikit-learn==0.19.1
+scipy==1.0.1
+six==1.11.0
+urllib3==1.22
