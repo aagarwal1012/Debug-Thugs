@@ -37,6 +37,7 @@ def insertIntoDatabase(lattitude, longitude):
 	}
 
     ''')
+    # print("Result getting after request from Graphql : \n"+result)
 
 def show(data):
 	i = 0
@@ -44,7 +45,7 @@ def show(data):
 		print(str(data.get(temp)).split(','))
 		i = i + 1
 
-def predictPotholes(raw):
+def predictPotholes(raw, loaded_model):
 	# data as : timestamp,accx,accy,accz,gyrx,gyry,gyrz,longitude,latitude,speed
 
 	#start = time.time()
@@ -296,9 +297,6 @@ def predictPotholes(raw):
 	# coln std our feature matrix 
 	x = standardized_data
 
-	#loading the model
-	loaded_model = pickle.load(open('model_svm.pkl', 'rb'))
-
 	y_pred = loaded_model.predict(x)
 
 	print('predictions: ',y_pred)
@@ -317,8 +315,9 @@ def predictPotholes(raw):
 	if(c == 1):
 		URL =URL[:-1]
 		URL = URL + '&key=' + key
+		print("Url requesting to google api : \n" + URL)
 		r = requests.get(URL)
-		#print(r.json())
+		print("Result from google api :\n" + r.json())
 		k = 0
 		for j in r.json().get('snappedPoints'):
 		    if(k%2==0):

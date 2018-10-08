@@ -1,5 +1,6 @@
 from bottle import run, get, post, request, delete, default_app
 import model
+import pickle
 
 # @get('/location')
 # def getAll():
@@ -12,7 +13,8 @@ import model
 # def clear_DB():
 # 	database.clear()
 
-
+#loading the model
+loaded_model = pickle.load(open('model_svm.pkl', 'rb'))
 
 @post('/data')
 def process():	
