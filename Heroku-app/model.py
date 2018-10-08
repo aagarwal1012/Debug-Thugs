@@ -14,7 +14,30 @@ import itertools
 import pickle
 import database
 import requests
+from graphqlclient import GraphQLClient
+import json
 #import time
+
+client = GraphQLClient('https://banku-synfour.herokuapp.com/v1alpha1/graphql')
+
+def insertIntoDatabase(lattitude, longitude):
+	result = client.execute('''
+    mutation insert_pothole{
+	  insert_pothole(
+	    objects: [
+	      {
+	        lattitude: "'''+lattitude+'''"
+	        longitude: "'''+longitude+'''"
+	      }
+	    ]
+	  ){
+	    returning{
+	      sno
+	    }
+	  }
+	}
+
+    ''')
 
 def show(data):
 	i = 0
@@ -283,7 +306,7 @@ def predictPotholes(raw):
 
 
 	URL = 'https://roads.googleapis.com/v1/nearestRoads?points='
-	key = '' #use your google api key
+	key = 'AIzaSyAzTd_IUCrQxrlDh9mHcvm2xYl039tg5xk' #use your google api key
 	c = 0
 
 	for i in range(len(y_pred)):
@@ -297,13 +320,14 @@ def predictPotholes(raw):
 		URL = URL + '&key=' + key
 		r = requests.get(URL)
 		#print(r.json())
-		# TODO : save in database
-		# k = 0
-		# for j in r.json().get('snappedPoints'):
-		#     if(k%2==0):
-		#         location = j.get('location')
-		#         database.insert_location(np.array((location.get('latitude'),location.get('longitude'))))
-		#     k = k + 1
+		k = 0
+		for j in r.json().get('snappedPoints'):
+		    if(k%2==0):
+		        location = j.get('location')
+		        insertIntoDatabase(location.get('latitude'),location.get('longitude'))
+		    k = k + 1
 
 	#end = time.time()
 	#print('time to run : ', end - start, ' seconds' )
+
+
