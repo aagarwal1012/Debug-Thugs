@@ -1,6 +1,4 @@
 from bottle import run, get, post, request, delete, default_app
-#import database
-# import database
 import model
 
 # @get('/location')

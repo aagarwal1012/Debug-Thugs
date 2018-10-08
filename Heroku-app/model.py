@@ -12,7 +12,6 @@ from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 import itertools
 import pickle
-import database
 import requests
 from graphqlclient import GraphQLClient
 import json
