@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private Button startRecording;
     private Button stopRecording;
     private Button showVariance;
+    private Button clearBtn;
     private SensorManager sensorManager;
     private Sensor accelerometer;
 
@@ -59,7 +60,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 sensorManager.registerListener(MainActivity.this, accelerometer, SENSOR_SAMPLING_PERIOD * 1000);
 
 
-
                 graph.getViewport().setYAxisBoundsManual(true);
                 graph.getViewport().setMinY(-50);
                 graph.getViewport().setMaxY(50);
@@ -92,13 +92,24 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 startActivity(new Intent(MainActivity.this, VarianceGraph.class));
             }
         });
+
+        clearBtn = (Button) findViewById(R.id.id_clearButton);
+        clearBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                startActivity(getIntent());
+            }
+        });
     }
 
     public void createVarianceData() {
-        float[] x = new float[50];
-
-        variance = new ArrayList<Float>();
+        float[] x = new float[30];
         Iterator<Float> iterator = aZ.iterator();
+        for (int i = 15; i < x.length; i++) {
+            x[i] = iterator.next();
+        }
+        variance = new ArrayList<Float>();
         while (iterator.hasNext()) {
             for (int i = 0; i <= x.length - 2; i++) {
                 x[i] = x[i + 1];
@@ -140,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 aZ.add(aZ_prev);
             }
 
-            lineGraphSeries.appendData(new DataPoint((newTime - startTime)/10 , aZ_prev ), true, 10000, false);
+            lineGraphSeries.appendData(new DataPoint((newTime - startTime) / 10, aZ_prev), true, 10000, false);
 
         }
     }

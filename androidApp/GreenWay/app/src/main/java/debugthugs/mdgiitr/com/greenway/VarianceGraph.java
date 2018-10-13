@@ -18,15 +18,15 @@ public class VarianceGraph extends AppCompatActivity {
         GraphView graph = (GraphView) findViewById(R.id.id_graphVariance);
 
         graph.getViewport().setYAxisBoundsManual(true);
-        graph.getViewport().setMinY(-5);
-        graph.getViewport().setMaxY(5);
+        graph.getViewport().setMinY(0);
+        graph.getViewport().setMaxY(150);
 
-        graph.getViewport().setXAxisBoundsManual(true);
-        graph.getViewport().setMinX(0);
+        graph.getViewport().setXAxisBoundsManual(false);
+        graph.getViewport().setMinX(1);
 
         // enable scaling and scrolling
-        graph.getViewport().setScalable(true);
-        graph.getViewport().setScalableY(true);
+        graph.getViewport().setScalable(false);
+        graph.getViewport().setScalableY(false);
 
         LineGraphSeries lineGraphSeries = new LineGraphSeries();
         long time = 0; //millisec
