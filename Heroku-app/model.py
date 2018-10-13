@@ -15,7 +15,7 @@ import pickle
 import requests
 from graphqlclient import GraphQLClient
 import json
-#import time
+import time
 
 client = GraphQLClient('https://banku-synfour.herokuapp.com/v1alpha1/graphql')
 
@@ -25,8 +25,8 @@ def insertIntoDatabase(lattitude, longitude):
 	  insert_pothole(
 	    objects: [
 	      {
-	        lattitude: "'''+lattitude+'''"
-	        longitude: "'''+longitude+'''"
+	        lattitude: "'''+str(lattitude)+'''"
+	        longitude: "'''+str(longitude)+'''"
 	      }
 	    ]
 	  ){
@@ -45,10 +45,10 @@ def show(data):
 		print(str(data.get(temp)).split(','))
 		i = i + 1
 
-def predictPotholes(raw, loaded_model):
+def predictPotholes(raw):
 	# data as : timestamp,accx,accy,accz,gyrx,gyry,gyrz,longitude,latitude,speed
 
-	#start = time.time()
+	start = time.time()
 
 	df = pd.DataFrame(columns = ['timestamp', 'accx', 'accy', 'accz', 'gyrx', 'gyry', 'gyrz', 'latitude', 'longitude', 'speed'])
 
@@ -297,6 +297,9 @@ def predictPotholes(raw, loaded_model):
 	# coln std our feature matrix 
 	x = standardized_data
 
+	#loading the model
+	loaded_model = pickle.load(open('model_svm.pkl', 'rb'))
+
 	y_pred = loaded_model.predict(x)
 
 	print('predictions: ',y_pred)
@@ -308,8 +311,8 @@ def predictPotholes(raw, loaded_model):
 
 	for i in range(len(y_pred)):
 		if( y_pred[i] == 1 ):        # means if it is a pothole then add it to DB : add gps co ordinates to DB
-			URL = URL + str(y[i][0]) + ','
-			URL = URL + str(y[i][1]) + '|'
+			URL = URL + str(y[i][1]) + ','
+			URL = URL + str(y[i][0]) + '|'
 			c = 1
 
 	if(c == 1):
@@ -317,7 +320,7 @@ def predictPotholes(raw, loaded_model):
 		URL = URL + '&key=' + key
 		print("Url requesting to google api : \n" + URL)
 		r = requests.get(URL)
-		print("Result from google api :\n" + r.json())
+		# print("Result from google api :\n" + r)
 		k = 0
 		for j in r.json().get('snappedPoints'):
 		    if(k%2==0):
@@ -325,7 +328,7 @@ def predictPotholes(raw, loaded_model):
 		        insertIntoDatabase(location.get('latitude'),location.get('longitude'))
 		    k = k + 1
 
-	#end = time.time()
-	#print('time to run : ', end - start, ' seconds' )
+	end = time.time()
+	# print('time to run : ', end - start, ' seconds' )
 
 

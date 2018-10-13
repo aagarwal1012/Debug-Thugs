@@ -1,6 +1,6 @@
 from bottle import run, get, post, request, delete, default_app
 import model
-import pickle
+# import pickle
 
 # @get('/location')
 # def getAll():
@@ -13,14 +13,11 @@ import pickle
 # def clear_DB():
 # 	database.clear()
 
-#loading the model
-loaded_model = pickle.load(open('model_svm.pkl', 'rb'))
-
 @post('/data')
 def process():	
 	#model.show(request.json)
 	model.predictPotholes(request.json)
-	#print(type(request.json))
+	print(type(request.json))
 	#return str
 
 app = default_app()
