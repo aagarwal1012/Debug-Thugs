@@ -57,13 +57,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 sensorManager.registerListener(MainActivity.this, accelerometer, SENSOR_SAMPLING_PERIOD * 1000);
 
 
-                graph.getViewport().setYAxisBoundsManual(true);
-                graph.getViewport().setMinY(-15);
-                graph.getViewport().setMaxY(15);
 
-                graph.getViewport().setXAxisBoundsManual(true);
-                graph.getViewport().setMinX(0);
-                
+                graph.getViewport().setYAxisBoundsManual(true);
+                graph.getViewport().setMinY(-50);
+                graph.getViewport().setMaxY(50);
+
+                graph.getViewport().setXAxisBoundsManual(false);
+                graph.getViewport().setMinX(1);
+
 
                 // enable scaling and scrolling
                 graph.getViewport().setScalable(true);
@@ -131,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 aZ_prev=0f;
                 aZ.add(aZ_prev);
             }
-            lineGraphSeries.appendData(new DataPoint((newTime - startTime)/10 , aZ_prev ), true, 1000000000, false);
+            lineGraphSeries.appendData(new DataPoint((newTime - startTime)/10 , aZ_prev ), true, 10000, false);
         }
     }
 
