@@ -5,10 +5,14 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -23,18 +27,27 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private long newTime, startTime, prevTime;
     private ArrayList<Float> aZ;
-    private ArrayList<Float> variance;
+    public static ArrayList<Float> variance;
     private Float aZ_prev;
 
     private int SENSOR_SAMPLING_PERIOD = 10; //in milliseconds
+
+    private LineGraphSeries<DataPoint> lineGraphSeries;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        lineGraphSeries = new LineGraphSeries<>();
+        final GraphView graph = (GraphView) findViewById(R.id.id_graphZ);
+
+
         startTime = newTime = prevTime = System.currentTimeMillis();
         aZ = new ArrayList<Float>();
+
+        aZ_prev = new Float(0);
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
@@ -44,6 +57,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void onClick(View v) {
                 sensorManager.registerListener(MainActivity.this, accelerometer, SENSOR_SAMPLING_PERIOD * 1000);
+
+
+                graph.getViewport().setYAxisBoundsManual(true);
+                graph.getViewport().setMinY(-5);
+                graph.getViewport().setMaxY(5);
+
+                graph.getViewport().setXAxisBoundsManual(true);
+                graph.getViewport().setMinX(0);
+
+                // enable scaling and scrolling
+                graph.getViewport().setScalable(true);
+                graph.getViewport().setScalableY(true);
+
+                graph.addSeries(lineGraphSeries);
             }
         });
 
@@ -105,6 +132,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             } else {
                 aZ.add(aZ_prev);
             }
+            lineGraphSeries.appendData(new DataPoint((newTime - startTime) / 1000, aZ_prev * 10), true, 1000000000, false);
         }
     }
 
