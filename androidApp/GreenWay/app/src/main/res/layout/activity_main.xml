@@ -31,5 +31,4 @@
         android:layout_height="200dp"
         android:id="@+id/id_graphZ"
         android:layout_margin="20dp"/>
-
 </LinearLayout>

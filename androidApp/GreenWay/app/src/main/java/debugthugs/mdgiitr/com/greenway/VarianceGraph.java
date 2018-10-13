@@ -30,10 +30,12 @@ public class VarianceGraph extends AppCompatActivity {
 
         LineGraphSeries lineGraphSeries = new LineGraphSeries();
         long time = 0; //millisec
+        float temp;
         Iterator iterator = MainActivity.variance.iterator();
         while (iterator.hasNext()){
-            lineGraphSeries.appendData(new DataPoint((double) iterator.next(),(double) time),true,1000000000,false);
-            time+=20;
+            temp = (float) iterator.next();
+            lineGraphSeries.appendData(new DataPoint(time*100,temp),true,1000000000,false);
+            time+=MainActivity.SENSOR_SAMPLING_PERIOD;
         }
         graph.addSeries(lineGraphSeries);
     }
