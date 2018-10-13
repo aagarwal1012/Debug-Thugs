@@ -1,5 +1,6 @@
 package debugthugs.mdgiitr.com.greenway;
 
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -24,12 +25,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private SensorManager sensorManager;
     private Sensor accelerometer;
 
-    private long newTime, startTime, prevTime;
+    public long newTime, startTime, prevTime;
     private ArrayList<Float> aZ;
-    private ArrayList<Float> variance;
+    public static ArrayList<Float> variance;
     private Float aZ_prev;
 
-    private int SENSOR_SAMPLING_PERIOD = 10; //in milliseconds
+    public static int SENSOR_SAMPLING_PERIOD = 10; //in milliseconds
 
     private LineGraphSeries<DataPoint> lineGraphSeries;
 
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         startTime = newTime = prevTime = System.currentTimeMillis();
         aZ = new ArrayList<Float>();
+
         aZ_prev = new Float(0);
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -87,20 +89,21 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void onClick(View v) {
                 createVarianceData();
+                startActivity(new Intent(MainActivity.this, VarianceGraph.class));
             }
         });
     }
 
     public void createVarianceData() {
-        float[] x = new float[20];
+        float[] x = new float[50];
 
         variance = new ArrayList<Float>();
         Iterator<Float> iterator = aZ.iterator();
         while (iterator.hasNext()) {
-            for (int i = 0; i < 19; i++) {
+            for (int i = 0; i <= x.length - 2; i++) {
                 x[i] = x[i + 1];
             }
-            x[20] = iterator.next();
+            x[x.length - 1] = iterator.next();
             variance.add(variance(x));
         }
     }
@@ -108,12 +111,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public float variance(float[] x) {
         float variance = 0f;
         float average = 0F;
+
+        //calculating avg
         for (int i = 0; i < x.length; i++) {
             average = average + x[i];
         }
         average = average / x.length;
+
+        //calc variance
         for (int i = 0; i < x.length; i++) {
-            variance = (float) Math.pow((double) (x[i] - average), 2);
+            variance = variance + (float) Math.pow((double) (x[i] - average), 2);
         }
         variance = variance / (x.length - 1);
         return variance;
@@ -129,10 +136,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 aZ.add(event.values[2]);
                 aZ_prev = event.values[2];
             } else {
-                aZ_prev=0f;
+                aZ_prev = 0f;
                 aZ.add(aZ_prev);
             }
+
             lineGraphSeries.appendData(new DataPoint((newTime - startTime)/10 , aZ_prev ), true, 10000, false);
+
         }
     }
 
