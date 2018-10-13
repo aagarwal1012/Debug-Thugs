@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         setContentView(R.layout.activity_main);
 
         startTime = newTime = prevTime = System.currentTimeMillis();
-        aZ=new ArrayList<Float>();
+        aZ = new ArrayList<Float>();
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
@@ -55,11 +55,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
         });
 
-        showVariance=(Button) findViewById(R.id.id_showVariance);
+        showVariance = (Button) findViewById(R.id.id_showVariance);
         showVariance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 createVarianceData();
+                startActivity(new Intent(MainActivity.this, VarianceGraph.class));
             }
         });
     }
@@ -67,13 +68,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void createVarianceData() {
         float[] x = new float[20];
 
-        variance=new ArrayList<Float>();
+        variance = new ArrayList<Float>();
         Iterator<Float> iterator = aZ.iterator();
-        while (iterator.hasNext()){
-            for (int i=0;i<19;i++){
-                x[i]=x[i+1];
+        while (iterator.hasNext()) {
+            for (int i = 0; i < 19; i++) {
+                x[i] = x[i + 1];
             }
-            x[20]=iterator.next();
+            x[20] = iterator.next();
             variance.add(variance(x));
         }
     }
