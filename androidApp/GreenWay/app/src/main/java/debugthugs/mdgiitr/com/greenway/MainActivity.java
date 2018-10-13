@@ -60,11 +60,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
 
                 graph.getViewport().setYAxisBoundsManual(true);
-                graph.getViewport().setMinY(-5);
-                graph.getViewport().setMaxY(5);
+                graph.getViewport().setMinY(-15);
+                graph.getViewport().setMaxY(15);
 
                 graph.getViewport().setXAxisBoundsManual(true);
                 graph.getViewport().setMinX(0);
+                
 
                 // enable scaling and scrolling
                 graph.getViewport().setScalable(true);
@@ -130,9 +131,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 aZ.add(event.values[2]);
                 aZ_prev = event.values[2];
             } else {
+                aZ_prev=0f;
                 aZ.add(aZ_prev);
             }
-            lineGraphSeries.appendData(new DataPoint((newTime - startTime) / 1000, aZ_prev * 10), true, 1000000000, false);
+            lineGraphSeries.appendData(new DataPoint((newTime - startTime)/10 , aZ_prev ), true, 1000000000, false);
         }
     }
 
