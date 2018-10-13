@@ -1,0 +1,6 @@
+query fetch{
+  pothole{
+    lattitude
+    longitude
+  }
+}
