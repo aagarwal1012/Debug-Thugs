@@ -18,4 +18,9 @@
         android:layout_height="wrap_content"
         android:text="StopRecording"
         android:id="@+id/id_stopRecording"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ShowVariance"
+        android:id="@+id/id_showVariance"/>
 </LinearLayout>

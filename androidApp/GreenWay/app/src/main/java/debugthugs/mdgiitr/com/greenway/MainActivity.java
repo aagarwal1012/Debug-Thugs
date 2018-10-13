@@ -1,5 +1,6 @@
 package debugthugs.mdgiitr.com.greenway;
 
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -10,16 +11,19 @@ import android.view.View;
 import android.widget.Button;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
     private Button startRecording;
     private Button stopRecording;
+    private Button showVariance;
     private SensorManager sensorManager;
     private Sensor accelerometer;
 
     private long newTime, startTime, prevTime;
     private ArrayList<Float> aZ;
+    private ArrayList<Float> variance;
     private Float aZ_prev;
 
     private int SENSOR_SAMPLING_PERIOD = 10; //in milliseconds
@@ -30,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         setContentView(R.layout.activity_main);
 
         startTime = newTime = prevTime = System.currentTimeMillis();
+        aZ=new ArrayList<Float>();
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
@@ -49,7 +54,44 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 sensorManager.unregisterListener(MainActivity.this);
             }
         });
+
+        showVariance=(Button) findViewById(R.id.id_showVariance);
+        showVariance.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createVarianceData();
+            }
+        });
     }
+
+    public void createVarianceData() {
+        float[] x = new float[20];
+
+        variance=new ArrayList<Float>();
+        Iterator<Float> iterator = aZ.iterator();
+        while (iterator.hasNext()){
+            for (int i=0;i<19;i++){
+                x[i]=x[i+1];
+            }
+            x[20]=iterator.next();
+            variance.add(variance(x));
+        }
+    }
+
+    public float variance(float[] x) {
+        float variance = 0f;
+        float average = 0F;
+        for (int i = 0; i < x.length; i++) {
+            average = average + x[i];
+        }
+        average = average / x.length;
+        for (int i = 0; i < x.length; i++) {
+            variance = (float) Math.pow((double) (x[i] - average), 2);
+        }
+        variance = variance / (x.length - 1);
+        return variance;
+    }
+
 
     @Override
     public void onSensorChanged(SensorEvent event) {
