@@ -23,56 +23,81 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private Button stopRecording;
     private Button showVariance;
     private Button clearBtn;
-    private SensorManager sensorManager;
+    private SensorManager sensorManagerAcc;
     private Sensor accelerometer;
+    private SensorManager sensorManagerGyro;
+    private Sensor gyrosensor;
 
     public long newTime, startTime, prevTime;
     private ArrayList<Float> aZ;
+    private ArrayList<Float> LyArrayList;
     public static ArrayList<Float> variance;
     private Float aZ_prev;
+    private Float w2, w1, Ly;
 
-    public static int SENSOR_SAMPLING_PERIOD = 10; //in milliseconds
+    public static float SENSOR_SAMPLING_PERIOD = 10F; //in milliseconds
 
-    private LineGraphSeries<DataPoint> lineGraphSeries;
-
+    private LineGraphSeries<DataPoint> lineGraphSeries_forZ;
+    private LineGraphSeries<DataPoint> lineGraphSeries_forLy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        lineGraphSeries = new LineGraphSeries<>();
-        final GraphView graph = (GraphView) findViewById(R.id.id_graphZ);
+        lineGraphSeries_forZ = new LineGraphSeries<>();
+        lineGraphSeries_forLy = new LineGraphSeries<>();
+        final GraphView graphZ = (GraphView) findViewById(R.id.id_graphZ);
+        final GraphView graphLy = (GraphView) findViewById(R.id.id_graphLy);
 
 
         startTime = newTime = prevTime = System.currentTimeMillis();
         aZ = new ArrayList<Float>();
+        LyArrayList = new ArrayList<>();
 
-        aZ_prev = new Float(0);
+        aZ_prev = w2 = w1 = Ly = new Float(0);
 
-        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+        sensorManagerAcc = (SensorManager) getSystemService(SENSOR_SERVICE);
+        accelerometer = sensorManagerAcc.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+
+        sensorManagerGyro = (SensorManager) getSystemService(SENSOR_SERVICE);
+        gyrosensor = sensorManagerAcc.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
         startRecording = (Button) findViewById(R.id.id_startRecording);
         startRecording.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sensorManager.registerListener(MainActivity.this, accelerometer, SENSOR_SAMPLING_PERIOD * 1000);
+                sensorManagerAcc.registerListener(MainActivity.this, accelerometer, SensorManager.SENSOR_DELAY_FASTEST);
+                sensorManagerAcc.registerListener(MainActivity.this, gyrosensor, SensorManager.SENSOR_DELAY_FASTEST);
 
+                graphZ.getViewport().setYAxisBoundsManual(true);
+                graphZ.getViewport().setMinY(-50);
+                graphZ.getViewport().setMaxY(50);
 
-                graph.getViewport().setYAxisBoundsManual(true);
-                graph.getViewport().setMinY(-50);
-                graph.getViewport().setMaxY(50);
-
-                graph.getViewport().setXAxisBoundsManual(false);
-                graph.getViewport().setMinX(1);
+                graphZ.getViewport().setXAxisBoundsManual(false);
+                graphZ.getViewport().setMinX(1);
 
 
                 // enable scaling and scrolling
-                graph.getViewport().setScalable(true);
-                graph.getViewport().setScalableY(true);
+                graphZ.getViewport().setScalable(true);
+                graphZ.getViewport().setScalableY(true);
 
-                graph.addSeries(lineGraphSeries);
+                graphZ.addSeries(lineGraphSeries_forZ);
+
+
+                graphLy.getViewport().setYAxisBoundsManual(true);
+                graphLy.getViewport().setMinY(-4);
+                graphLy.getViewport().setMaxY(4);
+
+                graphLy.getViewport().setXAxisBoundsManual(false);
+                graphLy.getViewport().setMinX(1);
+
+
+                // enable scaling and scrolling
+                graphLy.getViewport().setScalable(true);
+                graphLy.getViewport().setScalableY(true);
+
+                graphLy.addSeries(lineGraphSeries_forLy);
             }
         });
 
@@ -80,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         stopRecording.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sensorManager.unregisterListener(MainActivity.this);
+                sensorManagerAcc.unregisterListener(MainActivity.this);
             }
         });
 
@@ -140,20 +165,30 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-
         newTime = System.currentTimeMillis();
         if (newTime - prevTime >= SENSOR_SAMPLING_PERIOD) {
-            if (Math.abs(event.values[2]) > 0.5) {
-                aZ.add(event.values[2]);
-                aZ_prev = event.values[2];
-            } else {
-                aZ_prev = 0f;
-                aZ.add(aZ_prev);
+            if (event.sensor.equals(accelerometer)) {
+                if (Math.abs(event.values[2]) > 0.5) {
+                    aZ.add(event.values[2]);
+                    aZ_prev = event.values[2];
+                } else {
+                    aZ_prev = 0f;
+                    aZ.add(aZ_prev);
+                }
+                lineGraphSeries_forZ.appendData(new DataPoint((newTime - startTime) / 10, aZ_prev), true, 10000, false);
+
+            } else { //i.e. gyrosensor
+                w2 = event.values[1];
+                w2 = event.values[1];
+                Ly = Ly + ((w1 + w2) / 2) * (SENSOR_SAMPLING_PERIOD/1000);
+                w1 = w2;
+                LyArrayList.add(Ly);
+
+                lineGraphSeries_forLy.appendData(new DataPoint((newTime-startTime)/10,Ly),true,10000000,false);
             }
-
-            lineGraphSeries.appendData(new DataPoint((newTime - startTime) / 10, aZ_prev), true, 10000, false);
-
         }
+
+
     }
 
     @Override
