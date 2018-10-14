@@ -1,8 +1,7 @@
-#What is the problem?
+# What is the problem?
 
 The idea originated once when my(Kaustubh) grandma was travelling from our home to a place around 65 kms. Though, we knew many paths to reach the same place (from GoogleMaps), but the problem in front was not the path or the distance but rather the quality of road **as whole** (one or two potholes didn’t matter but rather the longer road patches of good / bad roads).
-
->  This problem is daily faced by patients and old people especially with problems like slip disc.
+This problem is daily faced by patients and old people especially with problems like slip disc.
 
 ## What do we propose?
 
@@ -15,7 +14,7 @@ Though there are many research papers and products around in the market which ar
 
 But in countries like India with roads in such condition, every point would be detected as a pothole with these algorithms, and it is infeasible to install dedicated devices on every vehicle.
 
-##OUR PRODUCT :
+## OUR PRODUCT :
 
 Our first aim is to provide assistance service to hospitals and ambulances. Whenever an ambulance would be used, the app will take input of patient's condition and display the most preferable path.
 For say : 
@@ -36,23 +35,13 @@ We have come up with an indigenous algorithm for dividing road patches in 3 type
 
   * Highways (60-70 km/hr)
 
- 
-
 Our current app is working perfectly fine for detecting all road conditions though we couldn’t give time for UI development or development of our final product.
-
- 
 
 Also as a part of safety service we have also implemented an ML model which will alarm you of upcoming big potholes when you are speeding high.
 
- 
-
 ## FUTURE PERSPECTIVE 
 
- 
-
 In future we plan to extend our app for all users to improve the driver experience.
-
- 
 
 Download the apk here : 
 
