@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.apollographql.android'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
     defaultConfig {
         applicationId "debugthugs.mdgiitr.com.greenway"
         minSdkVersion 19
@@ -31,7 +31,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:15.0.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.8.1'
     implementation 'com.google.android.gms:play-services-location:15.0.0'
-    implementation 'com.android.volley:volley:1.0.0'
+    implementation 'com.android.volley:volley:1.1.0'
     implementation 'com.apollographql.apollo:apollo-runtime:0.5.0'
     implementation 'org.slf4j:slf4j-nop:1.7.25'
     implementation 'com.google.maps:google-maps-services:0.2.11'

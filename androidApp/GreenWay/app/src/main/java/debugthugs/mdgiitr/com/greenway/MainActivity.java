@@ -407,6 +407,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                                 Log.d("sensor", t1);
 //                            Log.d("c", c + "");
                                 value.add(t1);
+                                t1 = "";
                                 c++;
                             } else if (c == 50) {
                                 c = 0;
