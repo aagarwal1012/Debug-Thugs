@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">GreenWay</string>
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="maps_api_key">AIzaSyAzTd_IUCrQxrlDh9mHcvm2xYl039tg5xk</string>
 </resources>

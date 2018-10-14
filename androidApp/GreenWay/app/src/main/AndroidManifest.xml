@@ -21,7 +21,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".VarianceGraphs" />
-        <activity android:name=".RoadCondition"></activity>
+        <activity android:name=".RoadCondition" />
+        <activity
+            android:name=".MapsActivity"
+            android:label="@string/title_activity_maps"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
