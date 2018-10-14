@@ -4,3 +4,15 @@ query fetch{
     longitude
   }
 }
+
+mutation insert_good_bad_road{
+  insert_good_bad_road(
+    objects: [
+    ]
+  )
+  {
+    returning{
+      SNo
+    }
+  }
+}
