@@ -16,6 +16,7 @@ import requests
 from graphqlclient import GraphQLClient
 import json
 import time
+import ast
 
 client = GraphQLClient('https://banku-synfour.herokuapp.com/v1alpha1/graphql')
 
@@ -48,12 +49,18 @@ def show(data):
 def predictPotholes(raw):
 	# data as : timestamp,accx,accy,accz,gyrx,gyry,gyrz,longitude,latitude,speed
 
+	print("Raw data : \n")
+	# print(raw)
+
 	start = time.time()
 
 	df = pd.DataFrame(columns = ['timestamp', 'accx', 'accy', 'accz', 'gyrx', 'gyry', 'gyrz', 'latitude', 'longitude', 'speed'])
 
+	ast.literal_eval(raw)
+	print(ast)
+
 	i = 0
-	for temp in raw:
+	for temp in ast:
 		data = str(raw.get(temp)).split(',')
 		for j in range(len(data)):
 			data[j] = float(data[j])
