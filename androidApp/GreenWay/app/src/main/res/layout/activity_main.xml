@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -47,6 +48,11 @@
             android:layout_height="wrap_content"
             android:text="Clear" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Acceleration 'z' with time" />
 
         <com.jjoe64.graphview.GraphView
             android:id="@+id/id_graphZ"
@@ -54,6 +60,11 @@
             android:layout_height="150dp"
             android:layout_margin="10dp" />
 
+        <TextView
+            android:layout_marginTop="10dp"
+            android:text="Gyro-sensor data with time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <com.jjoe64.graphview.GraphView
             android:id="@+id/id_graphLy"
