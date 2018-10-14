@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private Button showVariance;
     private Button clearBtn;
     private SensorManager sensorManager;
-    private Sensor accelerometer_graph;
+    private Sensor accelerometer;
 
     public long newTime, startTime, prevTime;
     private ArrayList<Float> aZ;
@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private LineGraphSeries<DataPoint> lineGraphSeries;
 
-    private Sensor accelerometer, gyro;
+    private Sensor accelerometer_g, gyro;
     LocationManager locationManager;
     String mprovider;
 
@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         value = new ArrayList<>();
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        accelerometer_g = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         gyro = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
@@ -151,13 +151,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         aZ_prev = new Float(0);
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        accelerometer_graph = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
 
         startRecording = (Button) findViewById(R.id.id_startRecording);
         startRecording.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sensorManager.registerListener(MainActivity.this, accelerometer_graph, SENSOR_SAMPLING_PERIOD * 1000);
+                sensorManager.registerListener(MainActivity.this, accelerometer, SENSOR_SAMPLING_PERIOD * 1000);
 
 
                 graph.getViewport().setYAxisBoundsManual(true);
@@ -246,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
     }
 
-    //onResume() register the accelerometer for listening the events
+    //onResume() register the accelerometer_g for listening the events
     protected void onResume() {
         super.onResume();
         sensorManager.registerListener(new SensorEventListener() {
@@ -302,7 +302,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void onAccuracyChanged(Sensor sensor, int accuracy) {
             }
-        }, accelerometer, SensorManager.SENSOR_DELAY_GAME);
+        }, accelerometer_g, SensorManager.SENSOR_DELAY_GAME);
 
 
         sensorManager.registerListener(new SensorEventListener() {
@@ -432,7 +432,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         //queue.add(stringRequest);
     }
 
-    //onPause() unregister the accelerometer for stop listening the events
+    //onPause() unregister the accelerometer_g for stop listening the events
     protected void onPause() {
         super.onPause();
         sensorManager.unregisterListener(this);
