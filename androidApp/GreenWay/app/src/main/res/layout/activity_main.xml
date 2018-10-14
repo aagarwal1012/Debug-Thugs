@@ -12,6 +12,13 @@
         android:orientation="vertical">
 
         <Button
+            android:id="@+id/id_maps"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Maps" />
+
+
+        <Button
             android:id="@+id/id_startRecording"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private Button showVariance;
     private Button showRoadCondition;
     private Button clearBtn;
+    private Button mapsBtn;
     private SensorManager sensorManagerAcc;
     private Sensor accelerometer;
     private SensorManager sensorManagerGyro;
@@ -269,6 +270,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
         });
 
+        mapsBtn = (Button) findViewById(R.id.id_maps);
+        mapsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, MapsActivity.class));
+            }
+        });
 
     }
 
