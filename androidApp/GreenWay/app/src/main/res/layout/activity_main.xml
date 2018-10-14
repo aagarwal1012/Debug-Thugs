@@ -1,40 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <Button
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="StartRecording"
-        android:id="@+id/id_startRecording"/>
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="StopRecording"
-        android:id="@+id/id_stopRecording"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/id_startRecording"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="StartRecording" />
+
+        <Button
+            android:id="@+id/id_stopRecording"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="StopRecording" />
 
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="ShowVariance"
-        android:id="@+id/id_showVariance"/>
+        <Button
+            android:id="@+id/id_showVariance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ShowVariance" />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/id_clearButton"
-        android:text="Clear"/>
+        <Button
+            android:id="@+id/id_showRoadCondition"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Show Road Condition" />
 
-    <com.jjoe64.graphview.GraphView
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:id="@+id/id_graphZ"
-        android:layout_margin="20dp"/>
-</LinearLayout>
+        <Button
+            android:id="@+id/id_clearButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Clear" />
+
+
+        <com.jjoe64.graphview.GraphView
+            android:id="@+id/id_graphZ"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_margin="10dp" />
+
+
+        <com.jjoe64.graphview.GraphView
+            android:id="@+id/id_graphLy"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_margin="10dp" />
+    </LinearLayout>
+</ScrollView>
