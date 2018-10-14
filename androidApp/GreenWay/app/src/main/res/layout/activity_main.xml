@@ -31,6 +31,12 @@
             android:text="ShowVariance" />
 
         <Button
+            android:id="@+id/id_showRoadCondition"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Show Road Condition" />
+
+        <Button
             android:id="@+id/id_clearButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

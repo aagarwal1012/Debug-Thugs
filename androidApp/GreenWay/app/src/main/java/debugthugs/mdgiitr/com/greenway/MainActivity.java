@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private Button startRecording;
     private Button stopRecording;
     private Button showVariance;
+    private Button showRoadCondition;
     private Button clearBtn;
     private SensorManager sensorManagerAcc;
     private Sensor accelerometer;
@@ -30,15 +31,17 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     public long newTime, startTime, prevTime;
     private ArrayList<Float> aZ;
-    private ArrayList<Float> LyArrayList;
+    private ArrayList<Float> angleArrayList;
+    public static ArrayList<Float> angleVariation;
     public static ArrayList<Float> variance;
+    public static ArrayList<Byte> roadConditionData;
     private Float aZ_prev;
-    private Float w2, w1, Ly;
+    private Float w2Y, w1Y, Ly, w2X, w1X, Lx;
 
     public static float SENSOR_SAMPLING_PERIOD = 10F; //in milliseconds
 
     private LineGraphSeries<DataPoint> lineGraphSeries_forZ;
-    private LineGraphSeries<DataPoint> lineGraphSeries_forLy;
+    private LineGraphSeries<DataPoint> lineGraphSeries_for_angles;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,16 +49,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         setContentView(R.layout.activity_main);
 
         lineGraphSeries_forZ = new LineGraphSeries<>();
-        lineGraphSeries_forLy = new LineGraphSeries<>();
+        lineGraphSeries_for_angles = new LineGraphSeries<>();
         final GraphView graphZ = (GraphView) findViewById(R.id.id_graphZ);
         final GraphView graphLy = (GraphView) findViewById(R.id.id_graphLy);
 
 
         startTime = newTime = prevTime = System.currentTimeMillis();
         aZ = new ArrayList<Float>();
-        LyArrayList = new ArrayList<>();
+        angleArrayList = new ArrayList<>();
+        angleVariation = new ArrayList<>();
+        roadConditionData = new ArrayList<>();
 
-        aZ_prev = w2 = w1 = Ly = new Float(0);
+        aZ_prev = w2Y = w1Y = Ly = w2X = w1X = Lx = new Float(0);
 
         sensorManagerAcc = (SensorManager) getSystemService(SENSOR_SERVICE);
         accelerometer = sensorManagerAcc.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
@@ -86,8 +91,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
 
                 graphLy.getViewport().setYAxisBoundsManual(true);
-                graphLy.getViewport().setMinY(-4);
-                graphLy.getViewport().setMaxY(4);
+                graphLy.getViewport().setMinY(-3);
+                graphLy.getViewport().setMaxY(3);
 
                 graphLy.getViewport().setXAxisBoundsManual(false);
                 graphLy.getViewport().setMinX(1);
@@ -97,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 graphLy.getViewport().setScalable(true);
                 graphLy.getViewport().setScalableY(true);
 
-                graphLy.addSeries(lineGraphSeries_forLy);
+                graphLy.addSeries(lineGraphSeries_for_angles);
             }
         });
 
@@ -114,7 +119,37 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void onClick(View v) {
                 createVarianceData();
-                startActivity(new Intent(MainActivity.this, VarianceGraph.class));
+                startActivity(new Intent(MainActivity.this, VarianceGraphs.class));
+            }
+        });
+
+        showRoadCondition = (Button) findViewById(R.id.id_showRoadCondition);
+        showRoadCondition.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createVarianceData();
+
+                Float temp1, temp2;
+                Iterator i1, i2;
+                i1 = variance.iterator();
+                i2 = angleVariation.iterator();
+                while (i1.hasNext() && i2.hasNext()) {
+                    temp1 = (Float) i1.next();
+                    temp2 = (Float) i2.next();
+                    if (temp1>120){
+                        roadConditionData.add((byte)1);
+                    }
+                    else{
+                        if(temp2>0.4){
+                            roadConditionData.add((byte)2);
+                        }
+                        else {
+                            roadConditionData.add((byte)0);
+                        }
+                    }
+                }
+
+                startActivity(new Intent(MainActivity.this,RoadCondition.class));
             }
         });
 
@@ -131,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void createVarianceData() {
         float[] x = new float[30];
         Iterator<Float> iterator = aZ.iterator();
-        for (int i = 15; i < x.length; i++) {
+        for (int i = x.length / 2; i < x.length; i++) {
             x[i] = iterator.next();
         }
         variance = new ArrayList<Float>();
@@ -142,6 +177,34 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             x[x.length - 1] = iterator.next();
             variance.add(variance(x));
         }
+
+
+        x = new float[50];
+        iterator = angleArrayList.iterator();
+        for (int i = x.length / 2; i < x.length; i++) {
+            x[i] = iterator.next();
+        }
+        angleVariation = new ArrayList<>();
+        while (iterator.hasNext()) {
+            for (int i = 0; i <= x.length - 2; i++) {
+                x[i] = x[i + 1];
+            }
+            x[x.length - 1] = iterator.next();
+            angleVariation.add(variation(x));
+        }
+    }
+
+    public float variation(float[] x) {
+        float max = x[0], min = x[0];
+        for (int i = 0; i < x.length; i++) {
+            if (x[i] > max) {
+                max = x[i];
+            }
+            if (x[i] < min) {
+                min = x[i];
+            }
+        }
+        return max - min;
     }
 
     public float variance(float[] x) {
@@ -178,13 +241,17 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 lineGraphSeries_forZ.appendData(new DataPoint((newTime - startTime) / 10, aZ_prev), true, 10000, false);
 
             } else { //i.e. gyrosensor
-                w2 = event.values[1];
-                w2 = event.values[1];
-                Ly = Ly + ((w1 + w2) / 2) * (SENSOR_SAMPLING_PERIOD/1000);
-                w1 = w2;
-                LyArrayList.add(Ly);
+                w2Y = event.values[1];
+                Ly = Ly + ((w1Y + w2Y) / 2) * (SENSOR_SAMPLING_PERIOD / 1000);
+                w1Y = w2Y;
 
-                lineGraphSeries_forLy.appendData(new DataPoint((newTime-startTime)/10,Ly),true,10000000,false);
+                w2X = event.values[0];
+                Lx = Lx + ((w1X + w2X) / 2) * (SENSOR_SAMPLING_PERIOD / 1000);
+                w1X = w2X;
+
+                angleArrayList.add((float) (Math.pow(Ly, 2) + Math.pow(Lx, 2)));
+
+                lineGraphSeries_for_angles.appendData(new DataPoint((newTime - startTime) / 10, (float) (Math.pow(Ly, 2) + Math.pow(Lx, 2))), true, 10000000, false);
             }
         }
 
