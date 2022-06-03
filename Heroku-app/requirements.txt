@@ -1,4 +1,4 @@
-bottle==0.12.13
+bottle==0.12.20
 certifi==2018.4.16
 chardet==3.0.4
 gunicorn==19.7.1
