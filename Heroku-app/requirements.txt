@@ -1,5 +1,5 @@
 bottle==0.12.13
-certifi==2018.4.16
+certifi==2022.12.7
 chardet==3.0.4
 gunicorn==19.7.1
 idna==2.6
